@@ -1,0 +1,35 @@
+#vis {
+  color: red;
+  transition: all 2ms;
+  &:hover {
+    color: blue;
+  }
+}
+
+.treemap_hover_pop {
+	background-color:rgba(0, 0, 0, 0.9);
+	width:150px;
+	height:100px;
+	font-family: "Open Sans", Helvetica, Arial, sans-serif; font-size: 12px; 
+	color:white;
+	border-radius:10px;
+	font-size:14px;
+	padding:10px;
+	border:1px solid white;
+}
+
+.treemap_pop_arrow {
+  margin-left:75px;
+  width: 0; 
+  height: 0; 
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(0, 0, 0, 0.9);
+}
+
+.treemap_whole_pop {
+	display:none;
+	z-index:1000;
+	position:absolute;
+	
+}
