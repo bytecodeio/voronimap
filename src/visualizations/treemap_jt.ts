@@ -15,12 +15,32 @@ import {
 declare var looker: Looker
 declare var LookerCharts: LookerChartUtils
 
-var wholepop,hoverpop,poparrow;
+var wholepop,hoverpop,poparrow,toparrow;
 
 function popMove(evt) {
 	if (wholepop != undefined) {
-		wholepop.style.top  = (evt.clientY - 130).toString() + 'px';
-		wholepop.style.left  = (evt.clientX - 72).toString() + 'px';
+		
+		var poptop,popleft;
+		var viswidth = document.getElementById('vis').offsetWidth;
+		
+		poptop = evt.clientY - 130;
+		popleft = evt.clientX - 78;
+		
+		if (popleft < 0) {popleft = 0};
+		if ((popleft + 173) > viswidth) {
+			popleft = viswidth - 173;
+		}
+		if (poptop < 0) {
+			poptop = poptop + 150;
+			toparrow.style.display = 'block';
+			poparrow.style.display = 'none';
+		} else {
+			toparrow.style.display = 'none';
+			poparrow.style.display = 'block';
+		}
+		
+		wholepop.style.top  = (poptop).toString() + 'px';
+		wholepop.style.left  = (popleft).toString() + 'px';
 	}
 }
 
@@ -95,7 +115,10 @@ const vis: TreemapVisualization = {
 	hoverpop.className = 'treemap_hover_pop';
 	poparrow = document.createElement('div');
 	poparrow.className = 'treemap_pop_arrow';
+	toparrow = document.createElement('div');
+	toparrow.className = 'treemap_top_arrow';
 	
+	wholepop.appendChild(toparrow);
 	wholepop.appendChild(hoverpop);
 	wholepop.appendChild(poparrow);
 	
@@ -118,8 +141,14 @@ const vis: TreemapVisualization = {
 
     const format = formatType(measure.value_format) || ((s: any): string => s.toString())
 
+	//console.log(colorScale.range(config.color_range));
+	
+	if (config.color_range == undefined) {config.color_range = ["#5245ed", "#ed6168", "#1ea8df", "#353b49", "#49cec1", "#b3a0dd", "#db7f2a", "#706080", "#a2dcf3", "#776fdf", "#e9b404", "#635189"];}
+	
     const colorScale: d3.ScaleOrdinal<string, null> = d3.scaleOrdinal()
     const color = colorScale.range(config.color_range)
+
+	//console.log(config.color_range);
 
     data.forEach((row: Row) => {
       row.taxonomy = {
@@ -138,7 +167,7 @@ const vis: TreemapVisualization = {
       .round(true)
 
     const svg = this.svg!
-      .html('')
+      .html(' ')
       .attr('width', '100%')
       .attr('height', '100%')
       .append('g')
@@ -163,7 +192,7 @@ const vis: TreemapVisualization = {
       //.on('click', (d) => console.log(d))
 	  .on('click', function (this: any, d: Cell) {
 		const coords = d3.mouse(this)
-		console.log(this);
+		//console.log(this);
 		
 		const xOffset = parseInt(this.getAttribute('transform').split(',')[0].replace('translate(',''));
 		const yOffset = parseInt(this.getAttribute('transform').split(',')[1].replace(')',''));
@@ -171,10 +200,13 @@ const vis: TreemapVisualization = {
         const event: object = { pageX: coords[0] + xOffset, pageY: coords[1] +yOffset }
 		
 		//const event: object = {pageX: this.clientX, pageY: this.clientX}
-		d.data.data[dimensions[0].name].links.forEach((link) => {
-			link.url = link.url + '&vis_config=' + encodeURIComponent(JSON.stringify({type:'treemap_jt'}));
-		})
+		//console.log(d.data);
 		
+		if (d.data.data[dimensions[0].name].hasOwnProperty('links')) {		
+			d.data.data[dimensions[0].name].links.forEach((link) => {
+				link.url = link.url + '&vis_config=' + encodeURIComponent(JSON.stringify({type:'treemap_jt'}));
+			})
+		}
 		
 		LookerCharts.Utils.openDrillMenu({
 			links: d.data.data[dimensions[0].name].links,
