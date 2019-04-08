@@ -4,7 +4,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 let webpackConfig = {
     entry: {
-        treemap_jt: './src/visualizations/treemap_jt.ts'
+        treemap: './src/visualizations/treemap.ts'
     },
     output: {
         filename: '[name].js',
