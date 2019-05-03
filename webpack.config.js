@@ -1,10 +1,11 @@
 let path = require('path');
 
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 let webpackConfig = {
     entry: {
-        treemap: './src/visualizations/treemap.ts'
+        voronoimap: './src/visualizations/voronoimap.ts'
     },
     output: {
         filename: '[name].js',
@@ -16,7 +17,12 @@ let webpackConfig = {
         extensions: ['.ts', '.js', '.scss', '.css']
     },
     plugins: [
-        new UglifyJSPlugin()
+        new UglifyJSPlugin(),
+        new CopyWebpackPlugin([
+            { from: 'src/visualizations/us_geo.json' },
+            { from: 'src/visualizations/airports.csv' },
+            { from: 'src/visualizations/flights.csv' },
+        ])
     ],
     module: {
         rules: [
@@ -28,10 +34,17 @@ let webpackConfig = {
                     'css-loader',
                     'sass-loader',
                 ]
-            }
-        ]
+            },
+        ],
     },
     devServer: {
+        host: 'jim.looker.com',
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': '*',
+        },
+        disableHostCheck: true,
+        allowedHosts: ['.looker.com'],
         contentBase: false,
         compress: true,
         port: 3443,
