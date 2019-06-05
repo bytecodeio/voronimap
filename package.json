@@ -25,6 +25,7 @@
 		"csv-loader": "^3.0.2",
 		"d3": "^5.9.2",
 		"d3-queue": "^3.0.7",
+		"d3.geoTile": "^1.0.1",
 		"papaparse": "^4.6.3",
 		"topojson": "^3.0.2"
 	}
